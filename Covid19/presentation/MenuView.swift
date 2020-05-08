@@ -11,7 +11,7 @@ import SwiftUI
 struct MenuView: View {
     var body: some View {
         HStack {
-            Text("Statistics")
+            Text("Statistiques")
                 .font(.title)
                 .fontWeight(.bold)
                 .foregroundColor(.white)

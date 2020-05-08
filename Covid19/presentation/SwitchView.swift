@@ -35,9 +35,9 @@ struct SwitchView: View {
     
     var body: some View {
         HStack {
-            SwitchButton(selectedIndex: $selectedIndex, index: 0, text: "My Country")
+            SwitchButton(selectedIndex: $selectedIndex, index: 0, text: "Pays")
             Spacer()
-            SwitchButton(selectedIndex: $selectedIndex, index: 1, text: "Global")
+            SwitchButton(selectedIndex: $selectedIndex, index: 1, text: "Total")
         }
         .frame(width: UIScreen.main.bounds.width - 30)
         .background(Color.black.opacity(0.25))

@@ -16,10 +16,16 @@ struct ChartView: View {
             .first?.number ?? 1
     }
     
+    private var cases: [GlobalCase] {
+        self.globalCases.cases.sorted {
+            $0.date < $1.date
+        }
+    }
+    
     var body: some View {
         VStack(spacing: 12) {
             HStack {
-                Text("Last 7 Days")
+                Text("7 derniers jours")
                     .font(.title)
                     .foregroundColor(.black)
                 Spacer()
@@ -27,7 +33,7 @@ struct ChartView: View {
             
             HStack(spacing: 15) {
                 
-                ForEach(globalCases.cases, id:\.self) { element in
+                ForEach(cases, id:\.self) { element in
                     ChartCell(number: element.number, date: element.date, numberMax: self.maxCase)
                 }
             }
