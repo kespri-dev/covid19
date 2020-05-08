@@ -13,6 +13,14 @@ struct ContentView: View {
     @State var selectedIndex = 0
     @ObservedObject var manager = ApiManager()
     
+    private var covidData: CovidData {
+        (selectedIndex == 0) ? manager.countryCovidData : manager.globalCovidData
+    }
+    
+    private var covidHistoryCases: GlobalCases {
+        (selectedIndex == 0) ? manager.countryHistoryCases : manager.globalHistoryCases
+    }
+    
     var body: some View {
         VStack(spacing: 20) {
             MenuView()
@@ -21,18 +29,18 @@ struct ContentView: View {
             SwitchView(selectedIndex: $selectedIndex)
                 .foregroundColor(.white)
             HStack(spacing: 15) {
-                CardView(width: (UIScreen.main.bounds.width / 2) - 30, title: "Affected", details: manager.covidData.cases.formatted, backgroundColor: .affected)
-                CardView(width: (UIScreen.main.bounds.width / 2) - 30, title: "Deaths", details: manager.covidData.deaths.formatted, backgroundColor: .death)
+                CardView(width: (UIScreen.main.bounds.width / 2) - 30, title: "Affected", details: covidData.cases.formatted, backgroundColor: .affected)
+                CardView(width: (UIScreen.main.bounds.width / 2) - 30, title: "Deaths", details: covidData.deaths.formatted, backgroundColor: .death)
             }
             .foregroundColor(.white)
             
             HStack(spacing: 15) {
-                CardView(width: (UIScreen.main.bounds.width / 3) - 25, title: "Recoverred", details: manager.covidData.recovered.formatted, backgroundColor: .recovered)
-                CardView(width: (UIScreen.main.bounds.width / 3) - 25, title: "Active", details: manager.covidData.active.formatted, backgroundColor: .active)
-                CardView(width: (UIScreen.main.bounds.width / 3) - 25, title: "Serious", details: manager.covidData.critical.formatted, backgroundColor: .serious)
+                CardView(width: (UIScreen.main.bounds.width / 3) - 25, title: "Recoverred", details: covidData.recovered.formatted, backgroundColor: .recovered)
+                CardView(width: (UIScreen.main.bounds.width / 3) - 25, title: "Active", details: covidData.active.formatted, backgroundColor: .active)
+                CardView(width: (UIScreen.main.bounds.width / 3) - 25, title: "Serious", details: covidData.critical.formatted, backgroundColor: .serious)
             }
             .foregroundColor(.white)
-            ChartView(globalCases: self.manager.globalCases)
+            ChartView(globalCases: self.manager.globalHistoryCases)
                 .padding()
                 .background(Color.white)
                 .cornerRadius(20)

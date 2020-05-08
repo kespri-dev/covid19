@@ -36,3 +36,8 @@ struct GlobalCase: Decodable, Hashable {
     let date: String
     let number: Int
 }
+
+
+struct CountryHistoryCases: Decodable {
+    let timeline: GlobalCases
+}

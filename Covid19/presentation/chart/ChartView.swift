@@ -11,6 +11,11 @@ import SwiftUI
 struct ChartView: View {
     var globalCases: GlobalCases
     
+    var maxCase: Int {
+        globalCases.cases.sorted { $0.number > $1.number }
+            .first?.number ?? 1
+    }
+    
     var body: some View {
         VStack(spacing: 12) {
             HStack {
@@ -23,7 +28,7 @@ struct ChartView: View {
             HStack(spacing: 15) {
                 
                 ForEach(globalCases.cases, id:\.self) { element in
-                    ChartCell(number: element.number, date: element.date)
+                    ChartCell(number: element.number, date: element.date, numberMax: self.maxCase)
                 }
             }
         }

@@ -22,7 +22,7 @@ struct CovidData: Decodable {
     let deathsPerOneMillion: Int
     let tests: Int
     let testsPerOneMillion: Double
-    let affectedCountries: Int
+    let affectedCountries: Int?
     
     static var empty: CovidData {
         .init(updated: 0, cases: 0, todayCases: 0, deaths: 0, todayDeaths: 0, recovered: 0, active: 0, critical: 0, casesPerOneMillion: 0, deathsPerOneMillion: 0, tests: 0, testsPerOneMillion: 0, affectedCountries: 0)

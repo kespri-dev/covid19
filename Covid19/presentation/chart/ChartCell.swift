@@ -11,6 +11,7 @@ import SwiftUI
 struct ChartCell: View {
     let number: Int
     let date: String
+    let numberMax: Int
     
     var body: some View {
         VStack(spacing: 12) {
@@ -20,7 +21,7 @@ struct ChartCell: View {
                 VStack {
                     Spacer(minLength: 0)
                     Color.death
-                        .frame(width: 12)
+                        .frame(width: 12, height: self.heightRatio(value: self.number, height: g.frame(in: .global).height))
                         .clipShape(Capsule())
                 }
             }
@@ -29,10 +30,15 @@ struct ChartCell: View {
         }
         .foregroundColor(.gray)
     }
+    
+    private func heightRatio(value: Int, height: CGFloat) -> CGFloat {
+        let ratio = height / CGFloat(numberMax)
+        return CGFloat(CGFloat(value) * ratio)
+    }
 }
 
 struct ChartCell_Previews: PreviewProvider {
     static var previews: some View {
-        ChartCell(number: 30_000, date: "04/04/20")
+        ChartCell(number: 30_000, date: "04/04/20", numberMax: 1000000)
     }
 }
