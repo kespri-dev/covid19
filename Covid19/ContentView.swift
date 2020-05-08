@@ -11,6 +11,7 @@ import SwiftUI
 struct ContentView: View {
     
     @State var selectedIndex = 0
+    @ObservedObject var manager = ApiManager()
     
     var body: some View {
         VStack(spacing: 20) {
@@ -18,21 +19,20 @@ struct ContentView: View {
                 .padding(.horizontal)
                 .padding(.top, (UIApplication.shared.windows.first?.safeAreaInsets.top ?? 0) + 15)
             SwitchView(selectedIndex: $selectedIndex)
-            
+                .foregroundColor(.white)
             HStack(spacing: 15) {
-                CardView(width: (UIScreen.main.bounds.width / 2) - 30, title: "Affected", details: "59,474", backgroundColor: .affected)
-                CardView(width: (UIScreen.main.bounds.width / 2) - 30, title: "Deaths", details: "3,682", backgroundColor: .death)
+                CardView(width: (UIScreen.main.bounds.width / 2) - 30, title: "Affected", details: manager.covidData.cases.formatted, backgroundColor: .affected)
+                CardView(width: (UIScreen.main.bounds.width / 2) - 30, title: "Deaths", details: manager.covidData.deaths.formatted, backgroundColor: .death)
             }
             .foregroundColor(.white)
             
             HStack(spacing: 15) {
-                CardView(width: (UIScreen.main.bounds.width / 3) - 25, title: "Recoverred", details: "59,474", backgroundColor: .recovered)
-                CardView(width: (UIScreen.main.bounds.width / 3) - 25, title: "Active", details: "3,682", backgroundColor: .active)
-                CardView(width: (UIScreen.main.bounds.width / 3) - 25, title: "Serious", details: "3,682", backgroundColor: .serious)
+                CardView(width: (UIScreen.main.bounds.width / 3) - 25, title: "Recoverred", details: manager.covidData.recovered.formatted, backgroundColor: .recovered)
+                CardView(width: (UIScreen.main.bounds.width / 3) - 25, title: "Active", details: manager.covidData.active.formatted, backgroundColor: .active)
+                CardView(width: (UIScreen.main.bounds.width / 3) - 25, title: "Serious", details: manager.covidData.critical.formatted, backgroundColor: .serious)
             }
             .foregroundColor(.white)
-            
-            ChartView()
+            ChartView(globalCases: self.manager.globalCases)
                 .padding()
                 .background(Color.white)
                 .cornerRadius(20)
@@ -40,31 +40,14 @@ struct ContentView: View {
         }
         .background(Color.background)
         .edgesIgnoringSafeArea(.top)
+        .onAppear {
+            self.manager.fetchData()
+        }
     }
 }
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
-    }
-}
-
-struct MenuView: View {
-    var body: some View {
-        HStack {
-            Text("Statistics")
-                .font(.title)
-                .fontWeight(.bold)
-                .foregroundColor(.white)
-            Spacer()
-            Button(action: {
-                print("TODO")
-            }) {
-                Text("FRANCE")
-                    .font(.headline)
-                    .fontWeight(.bold)
-                    .foregroundColor(.white)
-            }
-        }
     }
 }

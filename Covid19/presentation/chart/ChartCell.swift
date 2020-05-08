@@ -9,13 +9,13 @@
 import SwiftUI
 
 struct ChartCell: View {
-    let number: String
+    let number: Int
     let date: String
     
     var body: some View {
         VStack(spacing: 12) {
-            Text(number)
-                .font(.caption)
+            Text("\(number / 1000)K")
+                .font(.system(size: 10))
             GeometryReader { g in
                 VStack {
                     Spacer(minLength: 0)
@@ -33,6 +33,6 @@ struct ChartCell: View {
 
 struct ChartCell_Previews: PreviewProvider {
     static var previews: some View {
-        ChartCell(number: "300K", date: "04/04/20")
+        ChartCell(number: 30_000, date: "04/04/20")
     }
 }

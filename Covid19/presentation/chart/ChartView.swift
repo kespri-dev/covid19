@@ -9,6 +9,8 @@
 import SwiftUI
 
 struct ChartView: View {
+    var globalCases: GlobalCases
+    
     var body: some View {
         VStack(spacing: 12) {
             HStack {
@@ -19,8 +21,9 @@ struct ChartView: View {
             }
             
             HStack(spacing: 15) {
-                ForEach(0..<6) { _ in
-                    ChartCell(number: "330K", date: "04/04/20")
+                
+                ForEach(globalCases.cases, id:\.self) { element in
+                    ChartCell(number: element.number, date: element.date)
                 }
             }
         }
@@ -29,6 +32,6 @@ struct ChartView: View {
 
 struct ChartView_Previews: PreviewProvider {
     static var previews: some View {
-        ChartView()
+        ChartView(globalCases: .empty)
     }
 }
