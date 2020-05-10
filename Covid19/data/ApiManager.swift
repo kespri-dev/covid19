@@ -14,62 +14,65 @@ class ApiManager: ObservableObject {
     @Published var countryCovidData: CovidData = .empty
     @Published var globalHistoryCases: GlobalCases = .empty
     @Published var countryHistoryCases: GlobalCases = .empty
+    @Published var countriesCovidData: [CovidData] = []
+    
+    var selectedCountry: String = "France" {
+        didSet {
+            fetchData()
+        }
+    }
+    
+    private let baseUrl: String = "https://corona.lmao.ninja/v2/"
     
     func fetchData() {
         fetchGlobalData()
         fetchGlobalHistoryCases()
         fetchCountryData()
         fetchCountryHistoryCases()
+        fetchCountries()
     }
     
     func fetchGlobalData() {
-        
-        guard let url = URL(string: "https://corona.lmao.ninja/v2/all?today") else { return }
-        
-        URLSession.shared.dataTask(with: url) { (data, response, error) in
-            let covidData = try! JSONDecoder().decode(CovidData.self, from: data!)
-            
-            DispatchQueue.main.async {
-                self.globalCovidData = covidData
-            }
+        fetch(with: "\(baseUrl)all?today", for: CovidData.self) {
+            self.globalCovidData = $0
         }
-        .resume()
     }
     
     func fetchGlobalHistoryCases() {
-        guard let url = URL(string: "https://corona.lmao.ninja/v2/historical/all?lastdays=7") else { return }
-        
-        URLSession.shared.dataTask(with: url) { (data, response, error) in
-            let globalCases = try! JSONDecoder().decode(GlobalCases.self, from: data!)
-            
-            DispatchQueue.main.async {
-                self.globalHistoryCases = globalCases
-            }
+        fetch(with: "\(baseUrl)historical/all?lastdays=7", for: GlobalCases.self) {
+            self.globalHistoryCases = $0
         }
-        .resume()
     }
     
     func fetchCountryData() {
-        guard let url = URL(string: "https://corona.lmao.ninja/v2/countries/france?yesterday=false") else { return }
-        
-        URLSession.shared.dataTask(with: url) { (data, response, error) in
-            let countryCovidData = try! JSONDecoder().decode(CovidData.self, from: data!)
-            
-            DispatchQueue.main.async {
-                self.countryCovidData = countryCovidData
-            }
+        fetch(with: "\(baseUrl)countries/\(selectedCountry.lowercased())?yesterday=false", for: CovidData.self) {
+            self.countryCovidData = $0
         }
-        .resume()
     }
     
     func fetchCountryHistoryCases() {
-        guard let url = URL(string: "https://corona.lmao.ninja/v2/historical/france?lastdays=7") else { return }
+        fetch(with: "\(baseUrl)historical/\(selectedCountry.lowercased())?lastdays=7", for: CountryHistoryCases.self) {
+            self.countryHistoryCases = $0.timeline
+        }
+    }
+    
+    func fetchCountries() {
+        fetch(with: "\(baseUrl)countries?yesterday=false", for: [CovidData].self) {
+            self.countriesCovidData = $0
+        }
+    }
+    
+    private func fetch<T: Decodable>(with url: String, for type: T.Type, completion: @escaping (T) -> ()) {
+        guard let url = URL(string: url) else { return }
         
         URLSession.shared.dataTask(with: url) { (data, response, error) in
-            let countryHistoryCases = try! JSONDecoder().decode(CountryHistoryCases.self, from: data!)
+            
+            guard error == nil else { return }
+            
+            guard let decodedDatas = try? JSONDecoder().decode(T.self, from: data!) else { return }
             
             DispatchQueue.main.async {
-                self.countryHistoryCases = countryHistoryCases.timeline
+                completion(decodedDatas)
             }
         }
         .resume()

@@ -9,6 +9,9 @@
 import SwiftUI
 
 struct MenuView: View {
+    @Binding var show: Bool
+    @Binding var country: String
+    
     var body: some View {
         HStack {
             Text("Statistiques")
@@ -18,8 +21,11 @@ struct MenuView: View {
             Spacer()
             Button(action: {
                 print("TODO")
+                withAnimation {
+                    self.show.toggle()
+                }
             }) {
-                Text("FRANCE")
+                Text(country.uppercased())
                     .font(.headline)
                     .fontWeight(.bold)
                     .foregroundColor(.white)
@@ -30,6 +36,6 @@ struct MenuView: View {
 
 struct MenuView_Previews: PreviewProvider {
     static var previews: some View {
-        MenuView()
+        MenuView(show: .constant(false), country: .constant("France"))
     }
 }
